@@ -8,8 +8,8 @@
 #   repoName - The name of the repository to release to e.g. betaflight-configurator-nightly
 
 env:
-  owner: betaflight
-  repoName: betaflight-pull-requests
+  owner: mathiasvr
+  repoName: betaflight
   releaseNotes: >
     This is an automated development build.
     It may be unstable and result in corrupted configurations or data loss.
@@ -22,6 +22,7 @@ on:
     branches:
       - master
       - '*-maintenance'
+      - github-action-build-test
   pull_request:
     branches:
       - master
