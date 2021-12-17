@@ -1,0 +1,134 @@
+# Builds the Betaflight firmware
+#
+# After building, artifacts are released to a separate repository.
+#
+# You'll also need to setup the follwing pipeline variables:
+#   releaseNotes - The release notes to be published as part of the github release
+#   owner - The owner of the repository to release to e.g. betaflight
+#   repoName - The name of the repository to release to e.g. betaflight-configurator-nightly
+
+env:
+  owner: betaflight
+  repoName: betaflight-pull-requests
+  releaseNotes: >
+    This is an automated development build.
+    It may be unstable and result in corrupted configurations or data loss.
+    **Use only for testing.**
+
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - '*-maintenance'
+  pull_request:
+    branches:
+      - master
+      - '*-maintenance'
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-20.04
+    outputs:
+      targets: ${{ steps.get-targets.outputs.targets }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get all official build targets
+        id: get-targets
+        run: echo "::set-output name=targets::$(make targets-ci-print | jq -R -c 'split(" ")')"
+
+      - name: Cache build toolchain
+        uses: actions/cache@v2
+        id: cache-toolchain
+        with:
+          path: tools/
+          key: ${{ runner.os }}-${{ hashFiles('make/tools.mk') }}
+
+      - name: Download and install toolchain
+        if: steps.cache-toolchain.outputs.cache-hit != 'true'
+        run: make arm_sdk_install
+
+  build:
+    name: Build
+    needs: setup
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        target: ${{ fromJson(needs.setup.outputs.targets) }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Fetch toolchain from cache
+        uses: actions/cache@v2
+        id: cache-toolchain
+        with:
+          path: tools/
+          key: ${{ runner.os }}-${{ hashFiles('make/tools.mk') }}
+
+      - name: Build target
+        run: make EXTRA_FLAGS=-Werror ${{ matrix.target }}
+
+      - name: Publish build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: firmware
+          path: obj/*.hex
+
+  test:
+    name: Test
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: sudo apt-get install -y libblocksruntime-dev
+
+      - name: Run sanity checks
+        run: make EXTRA_FLAGS=-Werror checks
+
+      - name: Run all unit tests
+        run: make EXTRA_FLAGS=-Werror test-all
+
+  release:
+    name: Release
+    if: ${{ github.event_name == 'push' }}
+    needs: [build, test]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Fetch build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: firmware
+          path: release/
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=today::$(date '+%Y%m%d')"
+
+      - name: Release
+        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v0.1.14
+        with:
+          files: release/**
+          repository: ${{ env.owner }}/${{ env.repoName }}
+          name: '${{ github.repository }}: ${{ github.ref_name }} (${{ steps.date.outputs.today }})'
+          tag_name: ${{ steps.date.outputs.today }}.${{ github.repository }}.${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true
+          body: |
+            ${{ env.releaseNotes }}
+
+            ### Repository:
+            ${{ github.repository }} ([link](${{ github.event.repository.html_url }}))
+
+            ### Pull request branch:
+            ${{ github.ref_name }} ([link](${{ github.event.repository.html_url }}/tree/${{ github.ref_name }}))
+
+            ### Latest changeset:
+            ${{ github.event.head_commit.id }} ([link](${{ github.event.head_commit.url }}))
+
+            ### Changes:
+            ${{ github.event.head_commit.message }}
