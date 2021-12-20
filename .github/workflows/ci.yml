@@ -90,8 +90,8 @@ jobs:
       - name: Run sanity checks
         run: make EXTRA_FLAGS=-Werror checks
 
-      - name: Run all unit tests
-        run: make EXTRA_FLAGS=-Werror test-all
+      # - name: Run all unit tests
+      #   run: make EXTRA_FLAGS=-Werror test-all
 
   release:
     name: Release
