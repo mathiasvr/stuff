@@ -30,7 +30,10 @@ on:
 
 jobs:
   test:
-    run: mlr
+    name: test
+    runs-on: ubuntu-20.04
+    steps:
+     - run: mlr
   # setup:
   #   name: Setup
   #   runs-on: ubuntu-20.04
