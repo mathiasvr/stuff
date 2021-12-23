@@ -23,6 +23,7 @@ on:
       - master
       - '*-maintenance'
       - github-action-build-test
+      - main
   pull_request:
     branches:
       - master
