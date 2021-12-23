@@ -36,16 +36,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        # Repository name with owner. For example, actions/checkout
-        # Default: ${{ github.repository }}
-        repository: 'mathiasvr/ci-test'
-
-        # The branch, tag or SHA to checkout. When checking out the repository that
-        # triggered a workflow, this defaults to the reference or SHA for that event.
-        # Otherwise, uses the default branch.
-        ref: 'test'
+        repository: mathiasvr/ci-test
+        ref: test
 
     # - run: echo test > test.txt
+    - run: git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+    - run: git config --global user.name "github-actions"
 
     - run: git commit --allow-empty -m "Trigger notification"
 
