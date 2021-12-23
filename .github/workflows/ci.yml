@@ -36,6 +36,7 @@ jobs:
     steps:
     #  - run: sudo apt-get install -y miller
     #  - run: mlr
+     - run: sudo pip install csvkit
      - run: csvstack
   # setup:
   #   name: Setup
