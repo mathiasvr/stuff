@@ -45,9 +45,14 @@ jobs:
         # Otherwise, uses the default branch.
         ref: 'test'
 
-    - run: echo test > test.txt
+    # - run: echo test > test.txt
+
+    - run: git commit --allow-empty -m "Trigger notification"
+
+    - run: git push
 
     - uses: EndBug/add-and-commit@v7 # You can change this to use a specific version.
+      if: ${{ false }}
       with:
         # The arguments for the `git add` command (see the paragraph below for more info)
         # Default: '.'
@@ -113,4 +118,4 @@ jobs:
 
         # Arguments for the git tag command (the tag name always needs to be the first word not preceded by an hyphen)
         # Default: ''
-        tag: 'v1.0.0'
+        tag: 'v1.0.1'
