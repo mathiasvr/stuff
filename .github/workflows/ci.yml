@@ -40,12 +40,11 @@ jobs:
         ref: test
 
     # - run: echo test > test.txt
-    - run: git config user.name "github-actions" user.email "41898282+github-actions[bot]@users.noreply.github.com"
-    # - run: git config user.name "github-actions"
-
-    - run: git commit --allow-empty -m "Trigger notification 1"
-
-    - run: git push
+    - run: |
+        git config user.name "github-actions"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git commit --allow-empty -m "Trigger notification 2"
+        git push
 
     - uses: EndBug/add-and-commit@v7 # You can change this to use a specific version.
       if: ${{ false }}
