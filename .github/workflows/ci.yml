@@ -43,19 +43,19 @@ jobs:
         run: |
             git config user.name "github-actions"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git commit --allow-empty -m "Trigger notification 2"
-            git tag test-tag
+            git commit --allow-empty -m "Trigger notification 3"
+            git tag test-tag2
             git push --follow-tags
             
-      - name: Release
-        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v0.1.14
-        with:
-          # files: release/**
-          repository: mathiasvr/ci-test
-          name: test release
-          tag_name: test-tag
-          draft: false
-          prerelease: false
-          # fail_on_unmatched_files: true
-          body: |
-            test body
+      # - name: Release
+      #   uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v0.1.14
+      #   with:
+      #     # files: release/**
+      #     repository: mathiasvr/ci-test
+      #     name: test release
+      #     tag_name: test-tag
+      #     draft: false
+      #     prerelease: false
+      #     # fail_on_unmatched_files: true
+      #     body: |
+      #       test body
