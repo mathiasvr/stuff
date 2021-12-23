@@ -34,8 +34,8 @@ jobs:
     name: test
     runs-on: ubuntu-20.04
     steps:
-     - run: sudo apt-get install -y miller
-     - run: mlr
+    #  - run: sudo apt-get install -y miller
+    #  - run: mlr
      - run: csvstack
   # setup:
   #   name: Setup
