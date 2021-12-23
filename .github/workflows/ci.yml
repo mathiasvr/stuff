@@ -34,7 +34,7 @@ jobs:
     name: test
     runs-on: ubuntu-20.04
     steps:
-    #  - run: sudo apt-get install -y miller
+     - run: sudo apt-get install -y miller
     #  - run: mlr
      - run: sudo pip install csvkit
      - run: csvstack
