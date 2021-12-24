@@ -33,7 +33,11 @@ jobs:
   test:
     name: test
     runs-on: ubuntu-20.04
+    env:
+      testsha: ${{ env.repoName }}-${{ github.sha }}
     steps:
+      - run: echo "${{ env.testsha }}""
+
       - uses: actions/checkout@v2
         with:
           repository: mathiasvr/ci-test
