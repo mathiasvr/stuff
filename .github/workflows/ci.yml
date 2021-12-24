@@ -36,7 +36,7 @@ jobs:
     env:
       testsha: $GITHUB_SHA
     steps:
-      - run: echo "${{ env.testsha }}""
+      - run: echo ${{ env.testsha }}
 
       - uses: actions/checkout@v2
         with:
