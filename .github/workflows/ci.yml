@@ -34,7 +34,7 @@ jobs:
     name: test
     runs-on: ubuntu-20.04
     env:
-      testsha: $GITHUB_SHA
+      testsha: $repoName
     steps:
       - run: echo ${{ env.testsha }}
 
