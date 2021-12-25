@@ -33,33 +33,38 @@ jobs:
   test:
     name: test
     runs-on: ubuntu-20.04
-    env:
-      testsha: $repoName
     steps:
-      - run: echo ${{ env.testsha }}
+      - run: echo "hello"
 
-      - uses: actions/checkout@v2
-        with:
-          repository: mathiasvr/ci-test
-          ref: test
+      # - uses: actions/checkout@v2
+      #   with:
+      #     repository: mathiasvr/ci-test
+      #     ref: test
     
-      - name: Push tagged empty commit
-        run: |
-          git config user.name "github-actions"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit --allow-empty -m "Trigger notification 5"
-          git tag test-tag5
-          git push && git push --tags
+      # - name: Push tagged empty commit
+      #   run: |
+      #     git config user.name "github-actions"
+      #     git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      #     git commit --allow-empty -m "Trigger notification 5"
+      #     git tag test-tag5
+      #     git push && git push --tags
           
-      - name: Release
-        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v0.1.14
-        with:
-          # files: release/**
-          repository: mathiasvr/ci-test
-          name: test release
-          tag_name: test-tag5
-          draft: false
-          prerelease: false
-          # fail_on_unmatched_files: true
-          body: |
-            test body
+      # - name: Release
+      #   uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v0.1.14
+      #   with:
+      #     # files: release/**
+      #     repository: mathiasvr/ci-test
+      #     name: test release
+      #     tag_name: test-tag5
+      #     draft: false
+      #     prerelease: false
+      #     # fail_on_unmatched_files: true
+      #     body: |
+      #       test body
+
+  release:
+    name: Release Nightly
+    if: ${{ github.event_name != 'push' }}
+    runs-on: ubuntu-20.04
+    steps:
+      - run: echo "test"
