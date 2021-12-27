@@ -28,6 +28,7 @@ on:
     branches:
       - master
       - '*-maintenance'
+      - main
 
 jobs:
   test:
