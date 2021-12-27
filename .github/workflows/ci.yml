@@ -1,0 +1,79 @@
+# Builds the Betaflight firmware
+#
+# After building, artifacts are released to a separate repository.
+#
+# You'll also need to setup the follwing pipeline variables:
+#   releaseNotes - The release notes to be published as part of the github release
+#   owner - The owner of the repository to release to e.g. betaflight
+#   repoName - The name of the repository to release to e.g. betaflight-configurator-nightly
+
+env:
+  owner: mathiasvr
+  repoName: betaflight
+  releaseNotes: >
+    This is an automated development build.
+    It may be unstable and result in corrupted configurations or data loss.
+    **Use only for testing.**
+
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - '*-maintenance'
+      - github-action-build-test
+      - main
+      - pr
+  pull_request:
+    branches:
+      - master
+      - '*-maintenance'
+      - main
+      - pr
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        target:
+          - hey
+          - lol
+          - stuff
+    steps:
+      - run: echo "${{ matrix.target }}"
+
+      # - uses: actions/checkout@v2
+      #   with:
+      #     repository: mathiasvr/ci-test
+      #     ref: test
+    
+      # - name: Push tagged empty commit
+      #   run: |
+      #     git config user.name "github-actions"
+      #     git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      #     git commit --allow-empty -m "Trigger notification 5"
+      #     git tag test-tag5
+      #     git push && git push --tags
+          
+      # - name: Release
+      #   uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v0.1.14
+      #   with:
+      #     # files: release/**
+      #     repository: mathiasvr/ci-test
+      #     name: test release
+      #     tag_name: test-tag5
+      #     draft: false
+      #     prerelease: false
+      #     # fail_on_unmatched_files: true
+      #     body: |
+      #       test body
+
+  release:
+    name: Release Nightly
+    if: github.event_name != 'push'
+    runs-on: ubuntu-20.04
+    steps:
+      - run: echo "test"
