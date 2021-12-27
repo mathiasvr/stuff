@@ -77,3 +77,13 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - run: echo "test"
+
+  result:
+    name: CI Status
+    needs: [test]
+    if: ${{ always() }}
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check test result
+        if: ${{ needs.test.result != 'success' }}
+        run: exit 1
